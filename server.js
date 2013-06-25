@@ -1,16 +1,15 @@
 // Config
 var port = 8080;
-var frequency = 10;
+var interval = 0.3;
 
 // Init libs
 var express = require('express');
-var app = express()
+var app = express();
 app.use(express.static(__dirname));
-var http = require('http')
-var server = http.createServer(app)
-var io = require('socket.io').listen(server);
-
+var http = require('http');
+var server = http.createServer(app);
 server.listen(port);
+var io = require('socket.io').listen(server);
 
 // routing
 app.get('/', function (req, res) {
@@ -18,7 +17,6 @@ app.get('/', function (req, res) {
 });
 
 var clients = [];
-
 io.sockets.on('connection', function (socket) {
     console.log('Client connected');
     clients.push(socket);
@@ -39,8 +37,11 @@ function broadcastFrame(image) {
     }
 }
 
+console.time('grab');
 camelot.on('frame', function (image) {
+    console.timeEnd('grab');
     broadcastFrame(image);
+    console.time('grab');
 });
 
 camelot.on('error', function (err) {
@@ -48,7 +49,7 @@ camelot.on('error', function (err) {
 });
 
 camelot.grab( {
-  'title' : 'Camelot',
+  'title' : 'WebCam.io',
   'font' : 'Arial:24',
-  'frequency' : frequency
+  'frequency' : interval
 });

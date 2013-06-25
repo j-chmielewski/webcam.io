@@ -73,6 +73,6 @@
 		return output;
 	}
 
-	module.exports.toByteArray = b64ToByteArray;
-	module.exports.fromByteArray = uint8ToBase64;
+	window.toByteArray = b64ToByteArray;
+	window.fromByteArray = uint8ToBase64;
 }());

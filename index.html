@@ -1,100 +1,30 @@
 <html>
   <head>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="b64.js"></script>
   </head>
   
   <body>
-    <div id="frame"></div>
     
     <script type="text/javascript">
-      function encode(data) {
-	  var encoded = "";
-	  for(var i in data.frame) {
-	      var part = window.btoa(String.fromCharCode(data.frame[i]));
-	      part = part.substr(0, part.length - 2);
-	      encoded = encoded + part;
-	  }
-	  
-	  return encoded;
-      }
       
-      var socket = io.connect('http://localhost:8080');
+      var socket = io.connect('http://192.168.1.33:8080');
       socket.on('frame', function (data) {
-	  console.log(data.frame.length);
-	  console.log(data.frame[0]);
-	  console.log(typeof(data.frame));
-//	  drawFrame(data.frame);
+	  drawFrame(data.frame);
       });
 
-            
-
-/*      
-      var label = svg.append("text")
-      .attr("y", barHeight/2)
-      .attr("font-family", "sans-serif")
-      .attr("font-size", 50)
-      .attr("fill", "gray");
-*/      
-
-      var frameReady = false;
-      function initFrame(x, y) {
-	  //Width and height                                                    
-	  var svgWidth = x;
-	  var svgHeight = y;
-	  
-	  //Create SVG element
-	  var svg = d3.select("body")
-	      .append("svg")
-	      .attr("width", svgWidth)
-	      .attr("height", svgHeight);
-	  
-	  var pixels = [];
-	  for(var i=0; i < svgWidth; i++) {
-	      for(var j=0; j < svgHeight; j++) {
-		  pixels.push([i, j]);
-	      }
-	  }
-	  
-	  svg.selectAll("rect")
-	      .data(pixels)
-	      .enter()
-	      .append("rect")
-	      .attr("width", 1)
-	      .attr("height", 1)
-	      .attr("x", function(d) {
-		  return d[0];
-	      })
-	      .attr("y", function(d) {
-		  return d[1];
-	      });
-
-	  frameReady = true;
-      }
-
       function drawFrame(f) {
-	  if(!frameReady) {
-	      initFrame(1000, 1000);
-	  }
-	  
-	  svg.selectAll("rect")
-	      .data(pixels)
-	      .enter()
-	      .append("rect")
-// CONTINUEFROM	      .attr("fill", );
+	  console.log('drawing frame');
+	  var img = document.createElement('img');
+	  console.time('convert');
+	  var b64 = fromByteArray(f);
+	  console.timeEnd('convert');
+	  img.src = 'data:image/gif;base64,' + b64;
 
-/*
-	  svg.selectAll("rect")
-	      .attr("fill", "rgba(" + Math.round(v * 255/100) + ", 255, 100, 1)")
-	      .transition()
-	      .attr("width", v * svgWidth/maxVolume)
-	      .duration(500)
-	  
-	  label
-	      .text(v + '%')
-	      .transition()
-	      .attr("x", v * svgWidth/maxVolume - 120)
-	      .duration(500)
-*/  
+	  while (document.body.hasChildNodes()) {
+	      document.body.removeChild(document.body.lastChild);
+	  }
+	  document.body.appendChild(img);
     }
 
 
