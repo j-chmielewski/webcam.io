@@ -1,6 +1,7 @@
 // Config
 var port = 8080;
-var interval = 0.3;
+var interval = 0.5;
+var resolution = '800x600';
 
 // Init libs
 var express = require('express');
@@ -13,7 +14,7 @@ var io = require('socket.io').listen(server);
 
 // routing
 app.get('/', function (req, res) {
-  res.sendfile(__dirname + '/index.html');
+    res.sendfile(__dirname + '/index.html');
 });
 
 var clients = [];
@@ -49,7 +50,8 @@ camelot.on('error', function (err) {
 });
 
 camelot.grab( {
-  'title' : 'WebCam.io',
-  'font' : 'Arial:24',
-  'frequency' : interval
+    'title' : 'WebCam.io',
+    'font' : 'Arial:24',
+    'frequency' : interval,
+    'resolution': resolution,
 });
