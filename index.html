@@ -7,8 +7,9 @@
   <body>
     
     <script type="text/javascript">
-      
-      var socket = io.connect('http://10.100.10.142:8080');
+
+      var server = '10.100.10.142:8080';
+      var socket = io.connect(server);
       socket.on('frame', function (data) {
 	  drawFrame(data.frame);
       });
